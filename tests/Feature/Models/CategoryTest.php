@@ -38,5 +38,53 @@ class CategoryTest extends TestCase
         );
     }
 
+    public function testCreate()
+    {
+        $category = Category::create([
+            'name' => 'Test',
+            'description' => null
+        ]);
+        $category->refresh();
 
+        $this->assertEquals('Test', $category->name);
+        $this->assertNull($category->description);
+        $this->assertTrue((bool)$category->is_active);
+    }
+
+    public function testUpdate()
+    {
+        /** @var Category $category */
+        $category = factory(Category::class)->create([
+            'description' => 'test_description',
+            'is_active' => false
+        ]);
+
+        $data = [
+            'name' => 'test_name_updated',
+            'description' => 'test_description',
+            'is_active' => true
+        ];
+
+        $category->update($data);
+        foreach ($data as $key => $value) {
+            $this->assertEquals($value, $category->{$key});
+        }
+    }
+
+    public function testDeleted()
+    {
+        $category = factory(Category::class)->create();
+        $category->delete();
+        $categoriesCount = Category::count();
+
+        $this->assertEquals(0, $categoriesCount);
+    }
+
+    public function testUuid()
+    {
+        factory(Category::class)->create();
+        $category = Category::first();
+        $this->assertEquals(36,strlen($category->id));
+        $this->assertStringContainsString('-',$category->id);
+    }
 }
