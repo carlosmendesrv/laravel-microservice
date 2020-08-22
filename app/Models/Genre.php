@@ -11,4 +11,5 @@ class Genre extends Model
 
     protected $casts = ['id' => 'string'];
     protected $fillable = ['name', 'is_active'];
+    public $incrementing = false;
 }
