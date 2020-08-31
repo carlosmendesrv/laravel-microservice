@@ -71,13 +71,14 @@ class CategoryTest extends TestCase
         }
     }
 
-    public function testDeleted()
+    public function testDestroy()
     {
         $category = factory(Category::class)->create();
         $category->delete();
-        $categoriesCount = Category::count();
+        $this->assertNull(Category::find($category->id));
 
-        $this->assertEquals(0, $categoriesCount);
+        $category->restore();
+        $this->assertNotNull(Category::find($category->id));
     }
 
     public function testUuid()

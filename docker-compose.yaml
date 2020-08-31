@@ -61,6 +61,45 @@ services:
         networks:
             - app-network
 
+    phpmyadmin:
+      image: phpmyadmin/phpmyadmin:latest
+      container_name: private_phpmyadmin
+      ports:
+        - 8001:80
+      volumes:
+        - ./.docker/phpmyadmin/php-fpm.conf:/etc/php-fpm.conf
+        - ./.docker/phpmyadmin/php.ini:/etc/php.ini
+        - ./.docker/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+      environment:
+        PMA_ARBITRARY: 1
+        PMA_HOST: mysql
+        PMA_USER: root
+        PMA_PASSWORD: root
+        UPLOAD_LIMIT: 1G
+      restart: always
+      networks:
+        - app-network
+
+    mongo:
+      image: mongo
+      container_name: private_mongo
+      ports:
+        - '27017:27017'
+      networks:
+        - app-network
+
+    mongoclient:
+      image: mongoclient/mongoclient:latest
+      container_name: private_mongoclient
+      hostname: mongoclient
+      depends_on:
+        - mongo
+      ports:
+        - 3300:3000
+      networks:
+        - app-network
+
+
 networks:
     app-network:
         driver: bridge
