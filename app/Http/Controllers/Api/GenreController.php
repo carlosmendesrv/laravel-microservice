@@ -18,9 +18,10 @@ class GenreController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, $this->rules);
+        $genre = Genre::create($request->all());
+        $genre->refresh();
 
-        dd(Genre::create($request->all()));
-        return Genre::create($request->all());
+        return  $genre;
     }
 
     public function show(Genre $genre)
